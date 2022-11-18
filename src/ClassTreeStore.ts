@@ -1,11 +1,11 @@
-interface Data {
+export interface Data {
   id: Id
   parent: Id
   type?: string | null
 }
 
-type Id = number | string
-class TreeStore {
+export type Id = number | string
+export class TreeStore {
   public map: Map<Id, Data>
   public childrens: Map<Id, Id[]>
 
@@ -24,7 +24,8 @@ class TreeStore {
   }
 
   getAll(): Data[] {
-    return this.items
+    return this.items // Если часто то лучше так
+    // return [...this.map.values()] /// Если нужно создание нового массива
   }
 
   getItem(id: Id): Data | undefined {
@@ -42,7 +43,7 @@ class TreeStore {
   getAllChildrenIds(id: Id): Id[] {
     const ids: Id[] = this.childrens.get(id) ?? []
     
-    return ids.concat(ids.flatMap(this.getAllChildrenIds))
+    return ids.concat(ids.flatMap((v) => this.getAllChildrenIds(v)))
   }
 
   getAllChildren(id: Id): Data[] {
@@ -50,11 +51,11 @@ class TreeStore {
   }
 
   getAllParentIds(id: Id): Id[] {
-    let parentId = id
+    let parentId: Id | undefined = id
     let result = []
 
-    while ((parentId = this.map.get(parentId)!.parent) !== 'root') {
-      result.push(parentId)
+    while ((parentId = this.map.get(parentId!)?.parent) !== 'root' && typeof parentId !== 'undefined') {
+        result.push(parentId)
     }
     
     return result
@@ -81,5 +82,5 @@ const items = [
 
 const ts = new TreeStore(items)
 
-const result = ts.getAllParents(7)
+const result = ts.getAllChildrenIds(2)
 console.log('result', result);
