@@ -47,7 +47,7 @@ describe('ClassTreeStoreTests', () => {
     expect(result).toEqual(expectedResult)
 
     const failResult = treeStore.getChildren(100)
-    const failExpectedResult: [] = []
+    const failExpectedResult: Data[] = [] 
 
     expect(failResult).toEqual(failExpectedResult)
    })
@@ -61,7 +61,7 @@ describe('ClassTreeStoreTests', () => {
     expect(result).toEqual(expectedResult)
 
     const failResult = treeStore.getByIds([100, 1000])
-    const failExpectedResult: [] = []
+    const failExpectedResult: Data[] = [] 
 
     expect(failResult).toEqual(failExpectedResult)
 
