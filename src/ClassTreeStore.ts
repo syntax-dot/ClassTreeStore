@@ -52,16 +52,14 @@ export class TreeStore {
 
   getAllParentIds(id: Id): Id[] {
     let parentId: Id | undefined = id
-    let result = []
+    const result: Id[] = []
 
     const next = () =>
       (parentId = this.map.get(parentId!)?.parent) !== 'root'
       && typeof parentId !== 'undefined'
-    
 
     while (next()) 
-        result.push(parentId)
-    
+      result.push(parentId)
     
     return result
   }
