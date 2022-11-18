@@ -1,33 +1,37 @@
 export interface Data {
-  id: number | string
-  parent: number | string
+  id: Id
+  parent: Id
   type?: string | null
 }
 
+type Id = number | string
 export class TreeStore {
-  public array: Data []
+  public map: Map<Id, Data>
 
-  constructor(data: Data []) {
-    this.array = data
+  constructor(public items: Data[]) {
+    this.map = new Map()
+    for (const item of items) {
+      this.map.set(item.id, item)
+    }
   }
 
   getAll(): Data[] {
-    return this.array
+    return this.items
   }
 
-  getItem(id: number | string): Data | undefined {
-    return this.array.find(value => value.id === id)
+  getItem(id: Id): Data | undefined {
+    return this.map.get(id)
   }
 
-  getChildren(parentId: number | string): Data[] | [] {
+  getChildren(id: Id): Data[] | [] {
     return this.array.filter(value => value.parent === parentId)
   }
 
-  getAllChildren(parentId: number | string): Data[] {
+  getAllChildren(id: Id): Data[] {
     return this.array.filter((value) => value.parent >= parentId)
   }
 
-  getParent(parentId: number | string): Data | [] {
+  getParent(id :Id): Data | [] {
     const item = this.array.find(value => value.parent === parentId)
     if (typeof item === 'undefined')
       return []
@@ -35,7 +39,7 @@ export class TreeStore {
       return item
   }
 
-  getAllParents(id: number | string): Data[] {
+  getAllParents(id: Id): Data[] {
     // TODO
     return this.array.reverse().filter((value, index) => value.parent === id)
   }
