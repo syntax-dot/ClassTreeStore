@@ -15,12 +15,8 @@ export class TreeStore {
     return this.array
   }
 
-  getItem(id: number | string): Data | [] {
-    const item = this.array.find(value => value.id === id)
-    if (typeof item === 'undefined')
-      return []
-    else
-      return item
+  getItem(id: number | string): Data | undefined {
+    return this.array.find(value => value.id === id)
   }
 
   getChildren(parentId: number | string): Data[] | [] {
