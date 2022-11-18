@@ -1,17 +1,18 @@
-export interface Data {
+interface Data {
   id: Id
   parent: Id
   type?: string | null
 }
 
 type Id = number | string
-export class TreeStore {
+class TreeStore {
   public map: Map<Id, Data>
   public childrens: Map<Id, Id[]>
 
   constructor(public items: Data[]) {
     this.map = new Map()
-    
+    this.childrens = new Map()
+
     for (const item of items) {
       this.map.set(item.id, item)
 
@@ -30,25 +31,37 @@ export class TreeStore {
     return this.map.get(id)
   }
 
-  getChildren(id: Id): Data[] | undefined {
-    return this.map.get()
+  getChildren(id: Id): Data[] {
+    return this.getByIds(this.childrens.get(id) ?? [])
+  }
+
+  getByIds(ids: Id[]): Data[] {
+    return ids.map(id => this.map.get(id)!).filter(Boolean)
+  }
+
+  getAllChildrenIds(id: Id): Id[] {
+    const ids: Id[] = this.childrens.get(id) ?? []
+    
+    return ids.concat(ids.flatMap(this.getAllChildrenIds))
   }
 
   getAllChildren(id: Id): Data[] {
-    return this.map.
+    return this.getByIds(this.getAllChildrenIds(id))
   }
 
-  getParent(id :Id): Data | [] {
-    const item = this.array.find(value => value.parent === parentId)
-    if (typeof item === 'undefined')
-      return []
-    else
-      return item
+  getAllParentIds(id: Id): Id[] {
+    let parentId = id
+    let result = []
+
+    while ((parentId = this.map.get(parentId)!.parent) !== 'root') {
+      result.push(parentId)
+    }
+    
+    return result
   }
 
   getAllParents(id: Id): Data[] {
-    // TODO
-    return this.array.reverse().filter((value, index) => value.parent === id)
+    return this.getByIds(this.getAllParentIds(id))
   }
 }
 
@@ -59,10 +72,14 @@ const items = [
     { id: 4, parent: 2, type: 'test' },
     { id: 5, parent: 2, type: 'test' },
     { id: 6, parent: 2, type: 'test' },
+    { id: '7', parent: '8', type: 'test' },
+    { id: '8', parent: 3, type: 'test' },
+    { id: '9', parent: 3, type: 'test' },
     { id: 7, parent: 4, type: null },
     { id: 8, parent: 4, type: null },
 ]
 
 const ts = new TreeStore(items)
 
-ts.getAll()
+const result = ts.getAllParents(7)
+console.log('result', result);
