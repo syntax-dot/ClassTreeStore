@@ -7,11 +7,18 @@ export interface Data {
 type Id = number | string
 export class TreeStore {
   public map: Map<Id, Data>
+  public childrens: Map<Id, Id[]>
 
   constructor(public items: Data[]) {
     this.map = new Map()
+    
     for (const item of items) {
       this.map.set(item.id, item)
+
+      if (!this.childrens.has(item.parent))
+        this.childrens.set(item.parent, [])
+      
+      this.childrens.get(item.parent)?.push(item.id)
     }
   }
 
@@ -23,12 +30,12 @@ export class TreeStore {
     return this.map.get(id)
   }
 
-  getChildren(id: Id): Data[] | [] {
-    return this.array.filter(value => value.parent === parentId)
+  getChildren(id: Id): Data[] | undefined {
+    return this.map.get()
   }
 
   getAllChildren(id: Id): Data[] {
-    return this.array.filter((value) => value.parent >= parentId)
+    return this.map.
   }
 
   getParent(id :Id): Data | [] {
